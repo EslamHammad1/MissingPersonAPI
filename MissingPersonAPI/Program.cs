@@ -23,13 +23,13 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddCors(crosOptions =>
-{
-    crosOptions.AddPolicy("MyPolicy", CorsPolicyBuilder =>
-    {
-        CorsPolicyBuilder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
-    });
-});
+//builder.Services.AddCors(crosOptions =>
+//{
+//    crosOptions.AddPolicy("MyPolicy", CorsPolicyBuilder =>
+//    {
+//        CorsPolicyBuilder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+//    });
+//});
 
 builder.Services.AddDbContext<MissingPersonEntity>(options =>
 {
@@ -129,7 +129,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseStaticFiles();
-app.UseCors("MyPolicy");
+//app.UseCors("MyPolicy");
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
