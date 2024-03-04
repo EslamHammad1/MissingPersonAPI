@@ -1,9 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Missingpreson;
-using Missingpreson.DataEF;
-
-namespace Test_1.Controllers
+﻿namespace Test_1.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

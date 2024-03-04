@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
-
+﻿
 namespace Missingpreson
 {
     public class UserRegisterDTO

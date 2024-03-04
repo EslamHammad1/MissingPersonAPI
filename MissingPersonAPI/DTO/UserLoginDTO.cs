@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Missingpreson
+﻿namespace Missingpreson
 {
     public class UserLoginDTO
     {

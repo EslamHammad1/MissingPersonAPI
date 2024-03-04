@@ -1,15 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication;
-using Missingpreson.Models;
-using Microsoft.AspNetCore.Identity;
-using Missingpreson;
-using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using System.IdentityModel.Tokens.Jwt;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-
-namespace Missingpreson.Controllers
+﻿namespace Missingpreson.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

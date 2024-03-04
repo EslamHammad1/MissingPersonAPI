@@ -1,18 +1,3 @@
-using Microsoft.AspNetCore.Cors.Infrastructure;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Text;
-using Missingpreson.DataEF;
-using Missingpreson.Models;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-
-
 var builder = WebApplication.CreateBuilder(args);
 var CS = builder.Configuration.GetConnectionString("DefaultConnection");
 
@@ -23,13 +8,13 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
-//builder.Services.AddCors(crosOptions =>
-//{
-//    crosOptions.AddPolicy("MyPolicy", CorsPolicyBuilder =>
-//    {
-//        CorsPolicyBuilder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
-//    });
-//});
+builder.Services.AddCors(crosOptions =>
+{
+    crosOptions.AddPolicy("MyPolicy", CorsPolicyBuilder =>
+    {
+        CorsPolicyBuilder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+    });
+});
 
 builder.Services.AddDbContext<MissingPersonEntity>(options =>
 {
@@ -129,7 +114,7 @@ var app = builder.Build();
 
 
 app.UseStaticFiles();
-//app.UseCors("MyPolicy");
+app.UseCors("MyPolicy");
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();

@@ -1,13 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Missingpreson;
-using Missingpreson.DataEF;
-using System;
-using static System.Net.Mime.MediaTypeNames;
-
-namespace Test_1.Controllers
+﻿namespace Test_1.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -43,8 +34,6 @@ namespace Test_1.Controllers
         public async Task<IActionResult> PostFoundperson([FromForm] FoundPersonWithUserDTO fDTO)
 
         {
-            if (ModelState.IsValid == true)
-            {
                 if (fDTO.Image == null)
                     return BadRequest("Image is Required !");
                 if (fDTO.Image.Length > MaxallwoedImageSize)
@@ -67,14 +56,12 @@ namespace Test_1.Controllers
                 await _context.AddAsync(FoundPerson);
                 _context.SaveChanges();
                 return Ok(FoundPerson);
-            }
-            return BadRequest(ModelState);
+        
         }
         [HttpPut("{id:int}")]
        public async Task<IActionResult> Update(int id, [FromForm] FoundPersonWithUserDTO fNewDTO)
        {
-           if (ModelState.IsValid == true)
-           {
+        
 
                FoundPerson? oldPrs =await _context.foundPersons.FindAsync(id);
                if (oldPrs == null)
@@ -93,13 +80,12 @@ namespace Test_1.Controllers
                    oldPrs.Address_City = fNewDTO.Address_City;
                    oldPrs.Age = fNewDTO.Age;
                    oldPrs.Date = fNewDTO.Date;
+                   oldPrs.Note= fNewDTO.Note;
                    oldPrs.FoundCity = fNewDTO.FoundCity;
                    oldPrs.PersonWhoFoundhim = fNewDTO.PersonWhoFoundhim;
                    oldPrs.PhonePersonWhoFoundhim = fNewDTO.PhonePersonWhoFoundhim;
                    _context.SaveChanges();
                    return Ok(fNewDTO);
-           }
-           return BadRequest(ModelState);
        }
 
         [HttpDelete("{id:int}")]
@@ -120,7 +106,6 @@ namespace Test_1.Controllers
                 }
             }
             return BadRequest(ModelState);
-
         }
     }
 }

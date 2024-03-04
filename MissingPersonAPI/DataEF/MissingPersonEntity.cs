@@ -1,8 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Missingpreson;
-using Missingpreson.Models;
-namespace Missingpreson.DataEF
+﻿namespace Missingpreson.DataEF
 {
 
     public class MissingPersonEntity : IdentityDbContext<ApplicationUser>
