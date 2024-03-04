@@ -74,7 +74,10 @@
                     await fNewDTO.Image.CopyToAsync(dataStreem);
                     oldPrs.Image = dataStreem.ToArray();
                 }
-
+                if (fNewDTO == null)
+                {
+                return Ok(oldPrs);
+                }
                    oldPrs.Name = fNewDTO.Name;
                    oldPrs.Gender = fNewDTO.Gender;
                    oldPrs.Address_City = fNewDTO.Address_City;
@@ -84,6 +87,7 @@
                    oldPrs.FoundCity = fNewDTO.FoundCity;
                    oldPrs.PersonWhoFoundhim = fNewDTO.PersonWhoFoundhim;
                    oldPrs.PhonePersonWhoFoundhim = fNewDTO.PhonePersonWhoFoundhim;
+          
                    _context.SaveChanges();
                    return Ok(fNewDTO);
        }

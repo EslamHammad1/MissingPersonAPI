@@ -1,4 +1,6 @@
-﻿namespace Test_1.Controllers
+﻿using Microsoft.AspNetCore.JsonPatch;
+
+namespace Test_1.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -59,33 +61,65 @@
                 return Ok(LostPerson);
     
         }
+
+
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdatePerson(int id, [FromForm]  LostPersonWithUserDTO lNewDTO)
+        public async Task<IActionResult> UpdatePerson(int id, [FromForm] LostPersonWithUserDTO lNewDTO)
         {
-                LostPerson oldPrs = await _context.lostPersons.FindAsync(id);
-                if (oldPrs == null)
-                    return NotFound($"Not Found{id}");
-                
-                if (lNewDTO.Image != null)
+            LostPerson oldPrs = await _context.lostPersons.FindAsync(id);
+            if (oldPrs == null)
+                return NotFound($"Not Found{id}");
+
+            // Store a copy of the old data
+            var oldData = new LostPersonWithUserDTO
+            {
+                Name = oldPrs.Name,
+                Gender = oldPrs.Gender,
+                Address_City = oldPrs.Address_City,
+                Age = oldPrs.Age,
+                Date = oldPrs.Date,
+                LostCity = oldPrs.LostCity,
+                Note = oldPrs.Note,
+                PersonWhoLost = oldPrs.PersonWhoLost,
+                PhonePersonWhoLost = oldPrs.PhonePersonWhoLost,
+            };
+
+            if (lNewDTO.Image != null)
+            {
+                if (lNewDTO.Image.Length > MaxallwoedImageSize)
+                    return BadRequest("Max allowed size for image is 10 MB!");
+
+                using (var dataStreem = new MemoryStream())
                 {
-                    if (lNewDTO.Image.Length > MaxallwoedImageSize)
-                        return BadRequest("Max allowed size for image is 10 MB! ");
-                    using var dataStreem = new MemoryStream();
                     await lNewDTO.Image.CopyToAsync(dataStreem);
                     oldPrs.Image = dataStreem.ToArray();
                 }
+            }
 
-                oldPrs.Name = lNewDTO.Name;
-                oldPrs.Gender = lNewDTO.Gender;
-                oldPrs.Address_City = lNewDTO.Address_City;
-                oldPrs.Age = lNewDTO.Age;
-                oldPrs.Date = lNewDTO.Date;
-                oldPrs.LostCity = lNewDTO.LostCity; 
-                oldPrs.PersonWhoLost = lNewDTO.PersonWhoLost;
-                oldPrs.PhonePersonWhoLost = lNewDTO.PhonePersonWhoLost;
-                _context.SaveChanges();
-                return Ok(lNewDTO ) ;
+            oldPrs.Name = lNewDTO.Name;
+            oldPrs.Gender = lNewDTO.Gender;
+            oldPrs.Address_City = lNewDTO.Address_City;
+            oldPrs.Age = lNewDTO.Age;
+            oldPrs.Date = lNewDTO.Date;
+            oldPrs.LostCity = lNewDTO.LostCity;
+            oldPrs.Note = lNewDTO.Note;
+            oldPrs.PersonWhoLost = lNewDTO.PersonWhoLost;
+            oldPrs.PhonePersonWhoLost = lNewDTO.PhonePersonWhoLost;
+
+            _context.Entry(oldPrs).State = EntityState.Modified;
+
+            await _context.SaveChangesAsync();
+
+            // Return a custom response object containing both the old and updated data
+            var responseData = new
+            {
+                OldData = oldData,
+                NewData = lNewDTO
+            };
+
+            return Ok(responseData);
         }
+
         [HttpDelete("{id:int}")]
         //    [Authorize]
         public async Task<IActionResult> DeleteAsync(int id)

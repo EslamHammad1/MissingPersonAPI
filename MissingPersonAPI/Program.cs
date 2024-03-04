@@ -1,8 +1,26 @@
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.Razor;
+using System.Globalization;
+using Microsoft.Extensions.Options;
 var builder = WebApplication.CreateBuilder(args);
 var CS = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Configuration.AddUserSecrets<ApplicationUser>();// new
 // Add services to the container.
+
+//AddLocalization
+builder.Services.AddLocalization();
+var localizationOptions = new RequestLocalizationOptions();
+var SupprtCulture = new[]
+{
+    new CultureInfo("en-US"),
+    new CultureInfo("ar-EG")
+    };
+localizationOptions.SupportedCultures = SupprtCulture;
+localizationOptions.SupportedUICultures = SupprtCulture;
+localizationOptions.SetDefaultCulture("ar-EG");
+localizationOptions.ApplyCurrentCultureToResponseHeaders = true;
+//
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -107,10 +125,9 @@ builder.Services.AddSwaggerGen(Options =>
 var app = builder.Build();
 // Configure the HTTP request pipeline.
 
-
-    app.UseSwagger();
-    app.UseSwaggerUI();
-
+app.UseRequestLocalization(localizationOptions);
+app.UseSwagger();
+app.UseSwaggerUI();
 
 
 app.UseStaticFiles();
