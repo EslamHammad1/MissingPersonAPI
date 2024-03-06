@@ -46,13 +46,13 @@ namespace Test_1.Controllers
                 var LostPerson = new LostPerson
                 {
                     Name = lDTO.Name,
-                    Age = lDTO.Age,
+                    Age = (int)lDTO.Age,
                     Gender = lDTO.Gender,
                     Image = dataStreem.ToArray(), // new
                     Note = lDTO.Note,
                     LostCity = lDTO.LostCity,
                     Address_City = lDTO.Address_City,
-                    Date = lDTO.Date,
+                    Date = (DateTime)lDTO.Date,
                     PersonWhoLost = lDTO.PersonWhoLost,
                     PhonePersonWhoLost = lDTO.PhonePersonWhoLost,
                 };
@@ -66,10 +66,10 @@ namespace Test_1.Controllers
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdatePerson(int id, [FromForm] LostPersonWithUserDTO lNewDTO)
         {
-            LostPerson oldPrs = await _context.lostPersons.FindAsync(id);
+            var oldPrs = await _context.lostPersons.FindAsync(id);
             if (oldPrs == null)
                 return NotFound($"Not Found{id}");
-
+            
             // Store a copy of the old data
             var oldData = new LostPersonWithUserDTO
             {
@@ -95,16 +95,15 @@ namespace Test_1.Controllers
                     oldPrs.Image = dataStreem.ToArray();
                 }
             }
-
-            oldPrs.Name = lNewDTO.Name;
-            oldPrs.Gender = lNewDTO.Gender;
-            oldPrs.Address_City = lNewDTO.Address_City;
-            oldPrs.Age = lNewDTO.Age;
-            oldPrs.Date = lNewDTO.Date;
-            oldPrs.LostCity = lNewDTO.LostCity;
-            oldPrs.Note = lNewDTO.Note;
-            oldPrs.PersonWhoLost = lNewDTO.PersonWhoLost;
-            oldPrs.PhonePersonWhoLost = lNewDTO.PhonePersonWhoLost;
+            oldPrs.Name = lNewDTO.Name ?? oldPrs.Name;
+            oldPrs.Gender = lNewDTO.Gender ?? oldPrs.Gender;
+            oldPrs.Address_City = lNewDTO.Address_City ?? oldPrs.Address_City;
+            oldPrs.Age = lNewDTO.Age ?? oldPrs.Age;
+            oldPrs.Date = lNewDTO.Date ?? oldPrs.Date;
+            oldPrs.Note = lNewDTO.Note ?? oldPrs.Note;
+            oldPrs.LostCity = lNewDTO.LostCity ?? oldPrs.LostCity;
+            oldPrs.PersonWhoLost = lNewDTO.PersonWhoLost ?? oldPrs.PersonWhoLost;
+            oldPrs.PhonePersonWhoLost = lNewDTO.PhonePersonWhoLost ?? oldPrs.PhonePersonWhoLost;
 
             _context.Entry(oldPrs).State = EntityState.Modified;
 

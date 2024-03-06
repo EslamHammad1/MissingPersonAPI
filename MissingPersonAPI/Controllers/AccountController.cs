@@ -48,7 +48,7 @@
             if (ModelState.IsValid == true)
             {
                 //check - create token
-                ApplicationUser user = await userManager.FindByNameAsync(userDto.UserName);
+                ApplicationUser? user = await userManager.FindByNameAsync(userDto.UserName);
                 if (user != null)//user name found
                 {
                     bool found = await userManager.CheckPasswordAsync(user, userDto.Password);

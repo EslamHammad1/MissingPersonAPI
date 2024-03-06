@@ -66,7 +66,6 @@ builder.Services.AddAuthentication(options =>
 
 //________________________________________
 // todo: add login with google and facebook
-// todo: add multi language
 //new
 //builder.Services.AddAuthentication().AddGoogle(options =>
 //{

@@ -43,13 +43,13 @@
                 var FoundPerson = new FoundPerson
                 {
                     Name = fDTO.Name,
-                    Age = fDTO.Age,
+                    Age = (int)fDTO.Age,
                     Gender = fDTO.Gender,
                     Image = dataStreem.ToArray(), // new
                     Note = fDTO.Note,
                     FoundCity = fDTO.FoundCity,
                     Address_City = fDTO.Address_City,
-                    Date = fDTO.Date,
+                    Date = (DateTime)fDTO.Date,
                     PersonWhoFoundhim = fDTO.PersonWhoFoundhim,
                     PhonePersonWhoFoundhim = fDTO.PhonePersonWhoFoundhim,
                 };
@@ -59,38 +59,53 @@
         
         }
         [HttpPut("{id:int}")]
-       public async Task<IActionResult> Update(int id, [FromForm] FoundPersonWithUserDTO fNewDTO)
-       {
-        
+        public async Task<IActionResult> Update(int id, [FromForm] FoundPersonWithUserDTO fNewDTO)
+        {
+            // Find the existing FoundPerson entity by its ID
+            var oldPrs = await _context.foundPersons.FindAsync(id);
 
-               FoundPerson? oldPrs =await _context.foundPersons.FindAsync(id);
-               if (oldPrs == null)
-                    return NotFound($"Not Found{id}");
-                if (fNewDTO.Image != null)
-                {
-                    if (fNewDTO.Image.Length > MaxallwoedImageSize)
-                        return BadRequest("Max allowed size for image is 10 MB! ");
-                    using var dataStreem = new MemoryStream();
-                    await fNewDTO.Image.CopyToAsync(dataStreem);
-                    oldPrs.Image = dataStreem.ToArray();
-                }
-                if (fNewDTO == null)
-                {
-                return Ok(oldPrs);
-                }
-                   oldPrs.Name = fNewDTO.Name;
-                   oldPrs.Gender = fNewDTO.Gender;
-                   oldPrs.Address_City = fNewDTO.Address_City;
-                   oldPrs.Age = fNewDTO.Age;
-                   oldPrs.Date = fNewDTO.Date;
-                   oldPrs.Note= fNewDTO.Note;
-                   oldPrs.FoundCity = fNewDTO.FoundCity;
-                   oldPrs.PersonWhoFoundhim = fNewDTO.PersonWhoFoundhim;
-                   oldPrs.PhonePersonWhoFoundhim = fNewDTO.PhonePersonWhoFoundhim;
-          
-                   _context.SaveChanges();
-                   return Ok(fNewDTO);
-       }
+            // Check if the entity exists
+            if (oldPrs == null)
+                return NotFound($"Not Found {id}");
+
+            // Update the entity properties with data from the DTO
+            oldPrs.Name = fNewDTO.Name ?? oldPrs.Name ;
+            oldPrs.Gender = fNewDTO.Gender ?? oldPrs.Gender;
+            oldPrs.Address_City = fNewDTO.Address_City ?? oldPrs.Address_City ;
+            oldPrs.Age = fNewDTO.Age ?? oldPrs.Age;
+            oldPrs.Date = fNewDTO.Date ?? oldPrs.Date;
+            oldPrs.Note = fNewDTO.Note ?? oldPrs.Note;
+            oldPrs.FoundCity = fNewDTO.FoundCity ?? oldPrs.FoundCity;
+            oldPrs.PersonWhoFoundhim = fNewDTO.PersonWhoFoundhim ?? oldPrs.PersonWhoFoundhim;
+            oldPrs.PhonePersonWhoFoundhim = fNewDTO.PhonePersonWhoFoundhim ?? oldPrs.PhonePersonWhoFoundhim;
+            if(fNewDTO.Name == null)
+            {
+                oldPrs.Name = fNewDTO.Name ?? oldPrs.Name;
+            }
+            // Handle image update
+            if (fNewDTO.Image != null)
+            {
+                if (fNewDTO.Image.Length > MaxallwoedImageSize)
+                    return BadRequest("Max allowed size for the image is 10 MB!");
+
+                using var dataStream = new MemoryStream();
+                await fNewDTO.Image.CopyToAsync(dataStream);
+                oldPrs.Image = dataStream.ToArray();
+            }
+
+            // Save the changes to the database
+            try
+            {
+                await _context.SaveChangesAsync();
+                return Ok(fNewDTO);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it appropriately
+                return StatusCode(500, "An error occurred while updating the entity.");
+            }
+        }
+
 
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
