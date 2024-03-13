@@ -8,7 +8,7 @@ namespace Test_1.Controllers
     public class LostPersonController : ControllerBase
     {
         private new List<string> allowedExtensions = new List<string> { ".jpg , .png" }; // new
-        private long MaxallwoedImageSize = 5242880; // new
+        private long MaxallwoedImageSize = 10485760; // new
         private readonly MissingPersonEntity _context;
         public LostPersonController(MissingPersonEntity context)
         {
@@ -40,7 +40,7 @@ namespace Test_1.Controllers
                 if (lDTO.Image == null)
                     return BadRequest("Image is Required !");
                 if (lDTO.Image.Length > MaxallwoedImageSize)
-                    return BadRequest("Max allowed size for image is 5MB! ");
+                    return BadRequest("Max allowed size for image is 10 MB! ");
                 using var dataStreem = new MemoryStream();
                 await lDTO.Image.CopyToAsync(dataStreem);
                 var LostPerson = new LostPerson
