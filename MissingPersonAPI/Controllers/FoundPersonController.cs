@@ -78,10 +78,6 @@
             oldPrs.FoundCity = fNewDTO.FoundCity ?? oldPrs.FoundCity;
             oldPrs.PersonWhoFoundhim = fNewDTO.PersonWhoFoundhim ?? oldPrs.PersonWhoFoundhim;
             oldPrs.PhonePersonWhoFoundhim = fNewDTO.PhonePersonWhoFoundhim ?? oldPrs.PhonePersonWhoFoundhim;
-            if(fNewDTO.Name == null)
-            {
-                oldPrs.Name = fNewDTO.Name ?? oldPrs.Name;
-            }
             // Handle image update
             if (fNewDTO.Image != null)
             {

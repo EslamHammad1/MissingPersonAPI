@@ -3,10 +3,10 @@
     public class UserLoginDTO
     {
         [Required]
-        public string UserName { get; set; } = string.Empty;
+        public string? UserName { get; set; } 
         [Required]
         [DataType(DataType.Password)]
-        public string Password { get; set; } = string.Empty;
+        public string? Password { get; set; }
    
     }
 }
