@@ -1,7 +1,7 @@
-﻿namespace Missingpreson
+﻿namespace MissingPersonAPI
 {
     public class SearchImage
     {
-        public IFormFile? Iamge { get; set; }
+        public IFormFile Iamge { get; set; }
     }
 }

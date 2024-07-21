@@ -1,38 +1,66 @@
-using Microsoft.AspNetCore.Localization;
-using Microsoft.AspNetCore.Mvc.Razor;
-using System.Globalization;
-using Microsoft.Extensions.Options;
+using MissingPersonAPI.Models;
+using MissingPersonAPI.Services;
+
 var builder = WebApplication.CreateBuilder(args);
+
 var CS = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Configuration.AddUserSecrets<ApplicationUser>();// new
 // Add services to the container.
 
-//AddLocalization
-builder.Services.AddLocalization();
-var localizationOptions = new RequestLocalizationOptions();
-var SupprtCulture = new[]
-{
-    new CultureInfo("en-US"),
-    new CultureInfo("ar-EG")
-    };
-localizationOptions.SupportedCultures = SupprtCulture;
-localizationOptions.SupportedUICultures = SupprtCulture;
-localizationOptions.SetDefaultCulture("ar-EG");
-localizationOptions.ApplyCurrentCultureToResponseHeaders = true;
-//
-
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddControllers();
+builder.Services.AddHttpClient();
 
-builder.Services.AddCors(crosOptions =>
+builder.Services.AddCors
+(CorsOptions =>
 {
-    crosOptions.AddPolicy("MyPolicy", CorsPolicyBuilder =>
+    CorsOptions.AddPolicy("MyPolicy", CorsPolicyBuilder =>
     {
         CorsPolicyBuilder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
     });
 });
+//builder.Services.AddCors();
+//var origins = builder.Configuration.GetSection("Cors")?.GetSection("Origins")?.Value?.Split(',');
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy("MyPolicy", policyBuilder =>
+//    {
+//        policyBuilder.AllowAnyHeader();
+//        policyBuilder.AllowAnyMethod();
+//        if (origins is not { Length: > 0 })
+//        {
+//            return;
+//        }
+
+//        if (origins.Contains("*"))
+//        {
+//            policyBuilder.AllowAnyHeader();
+//            policyBuilder.AllowAnyMethod();
+//            policyBuilder.SetIsOriginAllowed(host => true);
+//            policyBuilder.AllowCredentials();
+//        }
+//        else
+//        {
+//            foreach (var origin in origins)
+//            {
+//                policyBuilder.WithOrigins(origin);
+//            }
+//        }
+//    });
+//}); 
+//(options =>
+//{
+//    options.AddDefaultPolicy(
+//        builder =>
+//        {
+//            builder.AllowAnyOrigin()
+//                .AllowAnyMethod()
+//                .AllowAnyHeader();
+//        });
+//});
 
 builder.Services.AddDbContext<MissingPersonEntity>(options =>
 {
@@ -41,7 +69,9 @@ builder.Services.AddDbContext<MissingPersonEntity>(options =>
 //___________________________
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>().
    AddEntityFrameworkStores<MissingPersonEntity>().AddDefaultTokenProviders(); // add AddDefaultTokenProviders for resat pass or forget
-
+builder.Services.AddScoped<IFoundPersonService, FoundPersonService >();
+builder.Services.AddScoped<ILostPersonService, LostPersonService>();
+builder.Services.AddScoped<ISearchService, SearchService>();
 //todo:check Jwt
 
 builder.Services.AddAuthentication(options =>
@@ -63,17 +93,6 @@ builder.Services.AddAuthentication(options =>
         new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]))
     };
 });
-
-//________________________________________
-// todo: add login with google and facebook
-//new
-//builder.Services.AddAuthentication().AddGoogle(options =>
-//{
-//    IConfiguration googleauth = builder.Configuration.GetSection("Authentication:Google");
-//    options.ClientId = googleauth["ClientId"];
-//    options.ClientSecret = googleauth["ClientSecret"];
-
-//});
 
 /// swagger buttom 
 builder.Services.AddSwaggerGen(Options =>
@@ -122,16 +141,29 @@ builder.Services.AddSwaggerGen(Options =>
 });
 
 var app = builder.Build();
+//app.Use((context, next) =>
+//{
+//    context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+//    context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
+//    context.Response.Headers.Add("Access-Control-Allow-Headers",
+//    "Content-Type, Authorization");
+//    //context.Response.Headers.Add("Access-Control-Allow-Headers",
+//    // "Content-Type, Authorization, x-requested-with, x-signalr-user-agent");
+//    //context.Response.Headers.Add("Access-Control-Allow-Credentials", "true"); // Add this line
+//    if (context.Request.Method == "OPTIONS")
+//    {
+//        context.Response.StatusCode = 200;
+//        return Task.CompletedTask;
+//    }
+//    return next();
+//});
 // Configure the HTTP request pipeline.
-
-app.UseRequestLocalization(localizationOptions);
+app.UseHttpsRedirection();
 app.UseSwagger();
 app.UseSwaggerUI();
-
-
 app.UseStaticFiles();
-app.UseCors("MyPolicy");
 app.UseRouting();
+app.UseCors("MyPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

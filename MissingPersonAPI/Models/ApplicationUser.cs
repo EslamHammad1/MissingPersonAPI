@@ -1,4 +1,4 @@
-﻿namespace Missingpreson.Models
+﻿namespace MissingPersonAPI.Models
 {
     public class ApplicationUser:IdentityUser
     {

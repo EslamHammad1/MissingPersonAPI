@@ -1,4 +1,7 @@
-﻿namespace Missingpreson.DataEF
+﻿using MissingPersonAPI;
+using MissingPersonAPI.Models;
+
+namespace Missingpreson.DataEF
 {
 
     public class MissingPersonEntity : IdentityDbContext<ApplicationUser>

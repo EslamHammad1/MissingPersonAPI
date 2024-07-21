@@ -1,7 +1,11 @@
-﻿namespace Missingpreson.Controllers
+﻿using MissingPersonAPI.Models;
+
+namespace MissingPersonAPI.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
+    
     public class AccountController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> userManager;
@@ -14,7 +18,7 @@
 
         }
         [HttpPost("register")]
-        public async Task<IActionResult> register([FromForm] UserRegisterDTO userDto)
+        public async Task<IActionResult> register([FromBody] UserRegisterDTO userDto)
         {
             if (ModelState.IsValid == true)
             {
@@ -41,14 +45,13 @@
             return BadRequest(ModelState);
 
         }
-
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromForm] UserLoginDTO userDto)
         {
             if (ModelState.IsValid == true)
             {
                 //check - create token
-                ApplicationUser? user = await userManager.FindByNameAsync(userDto.UserName);
+                ApplicationUser user = await userManager.FindByNameAsync(userDto.UserName);
                 if (user != null)//user name found
                 {
                     bool found = await userManager.CheckPasswordAsync(user, userDto.Password);
@@ -92,53 +95,5 @@
             return Unauthorized();
         }
     }
+
 }
-        // ExternalLoginController.cs
-
-
-        //[HttpGet("login/google")]
-        //public IActionResult LoginWithGoogle()
-        //{
-        //    var properties = new AuthenticationProperties
-        //    {
-        //        RedirectUri = "/signin-google"
-        //    };
-        //    return Challenge(properties, "Google");
-        //}
-
-        //[HttpGet("login/facebook")]
-        //public IActionResult LoginWithFacebook()
-        //{
-        //    var properties = new AuthenticationProperties
-        //    {
-        //        RedirectUri = "/signin-facebook"
-        //    };
-        //    return Challenge(properties, "Facebook");
-        //}
-
-        //[HttpGet("signin-google")]
-        //public async Task<IActionResult> SignInWithGoogle()
-        //{
-        //    var authenticateResult = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
-        //    // Get access token from authenticateResult.Properties
-
-        //    // Use the access token to authenticate the user in your API
-
-        //    return Ok("User authenticated with Google");
-        //}
-
-        //[HttpGet("signin-facebook")]
-        //public async Task<IActionResult> SignInWithFacebook()
-        //{
-        //    var authenticateResult = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
-        //    // Get access token from authenticateResult.Properties
-
-        //    // Use the access token to authenticate the user in your API
-
-        //    return Ok("User authenticated with Facebook");
-        //}
-    
-
-

@@ -1,4 +1,4 @@
-﻿namespace Missingpreson
+﻿namespace MissingPersonAPI
 {
     public class LostPerson : BaseEntity
     {

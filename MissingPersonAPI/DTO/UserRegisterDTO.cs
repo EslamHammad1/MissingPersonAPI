@@ -1,17 +1,17 @@
-﻿namespace Missingpreson
+﻿namespace MissingPersonAPI
 {
     public class UserRegisterDTO
     {
-        public string? UserName { get; set; } 
-        public string? Name { get; set; } 
+        public string UserName { get; set; } 
+        public string Name { get; set; } 
         [DataType(DataType.Password)]
-        public string? Password { get; set; } 
-        [Compare("Password")]
-        [DataType(DataType.Password)]
-        public string? PasswordConfirmed { get; set; } 
+        public string Password { get; set; }  
+       // [Compare("Password")]
+       // [DataType(DataType.Password)]
+       // public string PasswordConfirmed { get; set; }
     //    [EmailAddress]
         [AllowNull]
-        public string? Email { get; set; } 
+        public string Email { get; set; } 
 
     }
 }
